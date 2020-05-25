@@ -1,21 +1,31 @@
 const express = require('express');
 
+const SubService = require('../../models/services/sub_service');
+
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.post('/', async (req, res, next) => {
     const {
-        projectId
+        decodedJwt
     } = req.state;
+    const {
+        userId
+    } = decodedJwt;
+    const {
+        name
+    } = req.body;
 
     try {
-        validateFields({
-            project_id: {
-                value: projectId,
-                type: 'int'
-            },
-        });
+        await SubService.add(name, userId);
+        res.status(201);
+    } catch (err) {
+        next(err);
+    }
+});
 
-        const tasks = await TasksService.getAllForProject(parseInt(projectId));
+router.get('/', async (req, res, next) => {
+    try {
+        const subs = await SubService.getAll();
         res.json(tasks);
     } catch (err) {
         next(err);

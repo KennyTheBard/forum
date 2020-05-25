@@ -1,9 +1,9 @@
 const {
     query
-} = require('./db.js');
+} = require('../db.js');
 
-const create = async (name) => {
-    await query('INSERT INTO subs (name) VALUES ($1)', [name]);
+const add = async (name, authorId) => {
+    await query('INSERT INTO subs (name, author_id) VALUES ($1, $2)', [name, authorId]);
 }
 
 const getById = async (id) => {
@@ -11,7 +11,7 @@ const getById = async (id) => {
 }
 
 const getAll = async () => {
-    return await query('SELECT * FROM subs LIMIT $1 OFFSET $2');
+    return await query('SELECT * FROM subs');
 }
 
 const deleteById = async (id) => {
@@ -19,7 +19,7 @@ const deleteById = async (id) => {
 }
 
 module.exports = {
-    create,
+    add,
     getById,
     getAll,
     deleteById

@@ -1,21 +1,22 @@
 const express = require('express');
 
-const PostService = require('../../models/services/post_service')
+const ReplyService = require('../../models/services/reply_service')
 
 const router = express.Router();
 
 router.post('/', async (req, res, next) => {
     const {
-        subId,
-        userId
+        userId,
+        postId
     } = req.state;
     const {
-        title, 
-        content
+        content,
+        replyToId
     } = req.body;
 
     try {
-        await PostService.add(title, content, parseInt(subId), parseInt(userId));
+        await ReplyService.add(content, parseInt(postId),
+            parseInt(replyToId), parseInt(userId));
     } catch (err) {
         next(err);
     }
@@ -23,12 +24,12 @@ router.post('/', async (req, res, next) => {
 
 router.get('/', async (req, res, next) => {
     const {
-        subId
+        postId
     } = req.state;
 
     try {
-        const posts = await PostService.getAllBySubId(parseInt(subId));
-        res.json(posts);
+        const replies = await ReplyService.getAllByPostId(parseInt(postId));
+        res.json(replies);
     } catch (err) {
         next(err);
     }
